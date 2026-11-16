@@ -1,0 +1,10 @@
+[package]
+name = "pingchess"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.88"
+description = "Chess over ICMP echo packets"
+
+[dependencies]
+libc = "0.2.191"
+shakmaty = "0.30"
