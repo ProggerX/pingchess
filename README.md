@@ -107,17 +107,39 @@ unshare -Urn sh -c '
 
 ## Nix
 
-A flake is included, using [crane](https://crane.dev/) for the Rust build:
+A flake is included, using [crane](https://crane.dev/), with a committed
+`flake.lock`:
 
 ```sh
 nix build                 # ./result/bin/pingchess
 nix run . -- serve        # run a rooms hub
 nix develop               # Rust + iproute2, util-linux and libcap
+
+nix shell github:ProggerX/pingchess
+pingchess --help
 ```
 
-The packaged binary still needs `CAP_NET_RAW` for real ICMP. Nix store paths are
-read-only, so run the store binary with `sudo`, use the namespace demos, or copy
-it somewhere writable before `setcap`.
+The packaged binary still needs `CAP_NET_RAW` for real ICMP. Running it through
+sudo needs the absolute store path, because sudo resets `PATH`:
+
+```sh
+sudo "$(command -v pingchess)" connect 85.198.71.4 --nick nickname
+```
+
+Alternatively copy it out of the read-only Nix store and grant the capability:
+
+```sh
+install -m755 "$(command -v pingchess)" ./pingchess
+sudo setcap cap_net_raw+ep ./pingchess
+./pingchess connect 85.198.71.4 --nick nickname
+```
+
+The namespace demos (`scripts/demo*.sh`) need neither root nor setcap.
+`hydraJobs` exposes `pingchess`, `clippy`, and `fmt` jobs for each system.
+
+> If you are on a revision from before the lock was committed, Nix may try to
+> write `flake.lock` into the read-only store. Update the checkout, or pass
+> `--no-write-lock-file` to the Nix command.
 
 ## Playing
 

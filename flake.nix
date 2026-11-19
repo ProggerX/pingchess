@@ -98,5 +98,14 @@
       checks = forAllSystems (system: (perSystem system).checks);
       devShells = forAllSystems (system: (perSystem system).devShells);
       formatter = forAllSystems (system: (perSystem system).formatter);
+
+      # Entry point for Hydra jobsets, e.g.
+      # hydraJobs.x86_64-linux.pingchess. The aarch64 jobs need an aarch64
+      # builder or a remote builder configured in Hydra.
+      hydraJobs = forAllSystems (system: {
+        pingchess = self.packages.${system}.pingchess;
+        clippy = self.checks.${system}.pingchess-clippy;
+        fmt = self.checks.${system}.pingchess-fmt;
+      });
     };
 }
