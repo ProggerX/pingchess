@@ -100,12 +100,15 @@
       formatter = forAllSystems (system: (perSystem system).formatter);
 
       # Entry point for Hydra jobsets, e.g.
-      # hydraJobs.x86_64-linux.pingchess. The aarch64 jobs need an aarch64
-      # builder or a remote builder configured in Hydra.
-      hydraJobs = forAllSystems (system: {
-        pingchess = self.packages.${system}.pingchess;
-        clippy = self.checks.${system}.pingchess-clippy;
-        fmt = self.checks.${system}.pingchess-fmt;
-      });
+      # hydraJobs.x86_64-linux.pingchess. Only x86_64 is scheduled because
+      # that is the only runner available; the flake itself still supports
+      # building aarch64-linux if one is added later.
+      hydraJobs = {
+        x86_64-linux = {
+          pingchess = self.packages.x86_64-linux.pingchess;
+          clippy = self.checks.x86_64-linux.pingchess-clippy;
+          fmt = self.checks.x86_64-linux.pingchess-fmt;
+        };
+      };
     };
 }

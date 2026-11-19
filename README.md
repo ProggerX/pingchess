@@ -135,7 +135,7 @@ sudo setcap cap_net_raw+ep ./pingchess
 ```
 
 The namespace demos (`scripts/demo*.sh`) need neither root nor setcap.
-`hydraJobs` exposes `pingchess`, `clippy`, and `fmt` jobs for each system.
+`hydraJobs` exposes `pingchess`, `clippy`, and `fmt` jobs for `x86_64-linux`.
 
 > If you are on a revision from before the lock was committed, Nix may try to
 > write `flake.lock` into the read-only store. Update the checkout, or pass
